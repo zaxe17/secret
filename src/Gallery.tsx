@@ -3,17 +3,21 @@ import { Image, OrbitControls, useCursor, Text } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-// Billboard image that always faces camera
-const BillboardImage = ({ src, position, scale, onClick }: any) => {
+// Image that sticks on the sphere surface (no billboard effect)
+const SphereImage = ({ src, position, scale, onClick }: any) => {
   const ref = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
 
-  useFrame(({ camera }) => {
+  useEffect(() => {
     if (ref.current) {
-      ref.current.lookAt(camera.position);
+      const normal = new THREE.Vector3(...position).normalize();
+      const lookAtMatrix = new THREE.Matrix4();
+      lookAtMatrix.lookAt(new THREE.Vector3(0, 0, 0), normal, new THREE.Vector3(0, 1, 0));
+      const rotation = new THREE.Euler().setFromRotationMatrix(lookAtMatrix);
+      ref.current.rotation.set(rotation.x, rotation.y, rotation.z);
     }
-  });
+  }, [position]);
 
   return (
     <group ref={ref} position={position}>
@@ -209,7 +213,7 @@ const Gallery = () => {
           <SphereText message={message} radius={30} />
 
           {imageData.map(({ src, position, scale }, i) => (
-            <BillboardImage
+            <SphereImage
               key={`img-${i}`}
               src={src}
               position={position}
