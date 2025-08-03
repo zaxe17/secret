@@ -247,7 +247,7 @@ const Galleryboard = () => {
 		if (imageList.length === 0) return;
 
 		const sphereRadius = 33;
-		const latDivisions = 13;
+		const latDivisions = 12;
 		const lonDivisions = 20;
 		const generated: any[] = [];
 
@@ -272,7 +272,7 @@ const Galleryboard = () => {
 				generated.push({
 					src: imageList[imageIndex],
 					position: [x, y, z],
-					scale: 8,
+					scale: 9,
 				});
 
 				imageIndex++;
