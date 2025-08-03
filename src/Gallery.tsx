@@ -327,9 +327,9 @@ const Gallery = () => {
 									rotationStarted
 										? 100
 										: loading
-										? 100
-										: minimumLoadTimePassed
 										? 50
+										: minimumLoadTimePassed
+										? 80
 										: 20
 								}%`,
 							}}
