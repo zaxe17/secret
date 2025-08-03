@@ -324,13 +324,13 @@ const Gallery = () => {
 							className="h-full bg-white transition-all duration-500"
 							style={{
 								width: `${
-									loading
-										? 20
-										: !minimumLoadTimePassed
+									rotationStarted
 										? 50
-										: !rotationStarted
+										: minimumLoadTimePassed
 										? 80
-										: 100
+										: loading
+										? 0
+										: 90
 								}%`,
 							}}
 						/>
