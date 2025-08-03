@@ -299,7 +299,7 @@ const Galleryboard = () => {
 
 	return (
 		<div className="w-full h-screen relative">
-			<Canvas camera={{ position: [0, 0, 20], fov: 60 }}>
+			<Canvas camera={{ position: [35, 0, 20], fov: 60 }}>
 				<color attach="background" args={["black"]} />
 				<ambientLight intensity={1} />
 				<TwinklingStars count={1500} radius={150} />
