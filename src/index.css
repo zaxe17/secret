@@ -20,3 +20,22 @@
 ::-webkit-scrollbar-thumb:hover {
     background-color: #434343;
 }
+
+
+@keyframes subtleLoader {
+    0% {
+        width: 0%
+    }
+
+    40% {
+        width: 40%
+    }
+
+    70% {
+        width: 75%
+    }
+
+    100% {
+        width: 100%
+    }
+}

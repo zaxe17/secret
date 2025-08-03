@@ -321,17 +321,10 @@ const Gallery = () => {
 					</div>
 					<div className="w-64 h-1 bg-gray-700 rounded-full overflow-hidden">
 						<div
-							className="h-full bg-white transition-all duration-500"
+							className="h-full bg-white"
 							style={{
-								width: `${
-									rotationStarted
-										? 100
-										: loading
-										? 100
-										: minimumLoadTimePassed
-										? 50
-										: 20
-								}%`,
+								animation:
+									"subtleLoader 2.2s ease-out forwards",
 							}}
 						/>
 					</div>
