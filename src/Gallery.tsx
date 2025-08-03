@@ -221,11 +221,11 @@ const Gallery = () => {
 	const [rotationStarted, setRotationStarted] = useState(false);
 	const [minimumLoadTimePassed, setMinimumLoadTimePassed] = useState(false);
 
-	// Set minimum load time of 3 seconds
+	// Set minimum load time of 4 seconds
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setMinimumLoadTimePassed(true);
-		}, 3000);
+		}, 3500);
 		return () => clearTimeout(timer);
 	}, []);
 
@@ -322,17 +322,7 @@ const Gallery = () => {
 					<div className="w-64 h-1 bg-gray-700 rounded-full overflow-hidden">
 						<div
 							className="h-full bg-white transition-all duration-500"
-							style={{
-								width: `${
-									rotationStarted
-										? 50
-										: minimumLoadTimePassed
-										? 100
-										: loading
-										? 0
-										: 80
-								}%`,
-							}}
+                            style={{animation: "loading 2s ease infinite"}}
 						/>
 					</div>
 				</div>
