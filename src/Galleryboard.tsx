@@ -48,6 +48,7 @@ const SphereImage = ({ src, position, scale, onClick }: any) => {
 // Star shader
 const TwinklingStars = ({ count = 1000, radius = 100 }) => {
 	const pointsRef = useRef<THREE.Points>(null);
+	const materialRef = useRef<THREE.ShaderMaterial>(null);
 
 	const positions = useMemo(() => {
 		const pos = [];
@@ -71,17 +72,6 @@ const TwinklingStars = ({ count = 1000, radius = 100 }) => {
 		return arr;
 	}, [count]);
 
-	const materialRef = useRef<THREE.ShaderMaterial>(null);
-
-	useEffect(() => {
-		if (pointsRef.current) {
-			pointsRef.current.geometry.setAttribute(
-				"aOffset",
-				new THREE.BufferAttribute(offsets, 1)
-			);
-		}
-	}, [offsets]);
-
 	useFrame(({ clock }) => {
 		if (materialRef.current) {
 			materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
@@ -95,31 +85,42 @@ const TwinklingStars = ({ count = 1000, radius = 100 }) => {
 					attach="attributes-position"
 					args={[positions, 3]}
 				/>
+				<bufferAttribute
+					attach="attributes-aOffset"
+					args={[offsets, 1]}
+				/>
 			</bufferGeometry>
 			<shaderMaterial
 				ref={materialRef}
-				vertexShader={`
-          attribute float aOffset;
-          uniform float uTime;
-          varying float vOpacity;
-          void main() {
-            vOpacity = 0.5 + 0.5 * sin(uTime + aOffset);
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = 3.5;
-            gl_Position = projectionMatrix * mvPosition;
-          }
-        `}
-				fragmentShader={`
-          varying float vOpacity;
-          void main() {
-            float d = distance(gl_PointCoord, vec2(0.5));
-            if (d > 0.5) discard;
-            gl_FragColor = vec4(1.0, 1.0, 1.0, vOpacity);
-          }
-        `}
-				uniforms={{ uTime: { value: 0 } }}
-				transparent
-				depthWrite={false}
+				args={[{
+					uniforms: {
+						uTime: { value: 0 }
+					},
+					vertexShader: `
+						attribute float aOffset;
+						uniform float uTime;
+						varying float vOpacity;
+
+						void main() {
+							float speed = 3.0;
+							vOpacity = 0.3 + 0.7 * abs(sin(uTime * speed + aOffset));
+							vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+							gl_PointSize = 2.5;
+							gl_Position = projectionMatrix * mvPosition;
+						}
+					`,
+					fragmentShader: `
+						varying float vOpacity;
+
+						void main() {
+							float d = distance(gl_PointCoord, vec2(0.5));
+							if (d > 0.5) discard;
+							gl_FragColor = vec4(1.0, 1.0, 1.0, vOpacity);
+						}
+					`,
+					transparent: true,
+					depthWrite: false
+				}]}
 			/>
 		</points>
 	);
