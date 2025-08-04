@@ -3,7 +3,7 @@ import { Image, OrbitControls, useCursor, Text } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-const playfairFont = "/fonts/PlayfairDisplay-VariableFont_wght.ttf";
+const playfairFont = "/fonts/Rubik-Regular.ttf";
 
 // Image that sticks on the sphere surface
 const SphereImage = ({ src, position, scale, onClick }: any) => {
@@ -342,6 +342,7 @@ const Galleryboard = () => {
 					<img
 						src={selectedImage}
 						alt="fullscreen"
+                        draggable="false"
 						className="max-w-full max-h-full object-contain cursor-pointer"
 					/>
 				</div>
