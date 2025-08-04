@@ -247,9 +247,9 @@ const Galleryboard = () => {
 	useEffect(() => {
 		if (imageList.length === 0) return;
 
-		const sphereRadius = 33;
+		const sphereRadius = 34;
 		const latDivisions = 12;
-		const lonDivisions = 20;
+		const lonDivisions = 26;
 		const generated: any[] = [];
 
 		let imageIndex = 0;
