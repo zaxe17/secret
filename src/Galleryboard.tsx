@@ -178,11 +178,11 @@ const SphereText = ({
 					rotation={rotation}
 					fontSize={2.5}
 					font={playfairFont}
-					color="white"
+					color="#E5E4E2"
 					anchorX="center"
 					anchorY="middle"
-					outlineColor="black"
-					outlineWidth={0.03}>
+					outlineColor="#FFB6C1"
+					outlineWidth={0.04}>
 					{char}
 				</Text>
 			))}
