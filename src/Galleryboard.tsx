@@ -102,7 +102,7 @@ const TwinklingStars = ({ count = 1000, radius = 100 }) => {
 						varying float vOpacity;
 
 						void main() {
-							float speed = 3.0;
+							float speed = 1.5;
 							vOpacity = 0.3 + 0.7 * abs(sin(uTime * speed + aOffset));
 							vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
 							gl_PointSize = 2.5;
