@@ -4,8 +4,8 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const playfairFont = "/fonts/Rubik-Regular.ttf";
-const gif1 = "/src/assets/gif/Love You Very Much GIF.gif";
-const gif2 = "/src/assets/gif/Sweet Kisses Kiss GIF.gif";
+const gif1 = "/gif/Love You Very Much GIF.gif";
+const gif2 = "/gif/Sweet Kisses Kiss GIF.gif";
 
 const SphereImage = ({ src, position, scale, onClick }: any) => {
 	const ref = useRef<THREE.Group>(null);
