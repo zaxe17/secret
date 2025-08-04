@@ -4,8 +4,9 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const playfairFont = "/fonts/Rubik-Regular.ttf";
+const gif1 = "/src/assets/gif/Love You Very Much GIF.gif";
+const gif2 = "/src/assets/gif/Sweet Kisses Kiss GIF.gif";
 
-// Image that sticks on the sphere surface
 const SphereImage = ({ src, position, scale, onClick }: any) => {
 	const ref = useRef<THREE.Group>(null);
 	const [hovered, setHovered] = useState(false);
@@ -15,14 +16,8 @@ const SphereImage = ({ src, position, scale, onClick }: any) => {
 		if (ref.current) {
 			const normal = new THREE.Vector3(...position).normalize();
 			const lookAtMatrix = new THREE.Matrix4();
-			lookAtMatrix.lookAt(
-				new THREE.Vector3(0, 0, 0),
-				normal,
-				new THREE.Vector3(0, 1, 0)
-			);
-			const rotation = new THREE.Euler().setFromRotationMatrix(
-				lookAtMatrix
-			);
+			lookAtMatrix.lookAt(new THREE.Vector3(0, 0, 0), normal, new THREE.Vector3(0, 1, 0));
+			const rotation = new THREE.Euler().setFromRotationMatrix(lookAtMatrix);
 			ref.current.rotation.set(rotation.x, rotation.y, rotation.z);
 		}
 	}, [position]);
@@ -45,7 +40,62 @@ const SphereImage = ({ src, position, scale, onClick }: any) => {
 	);
 };
 
-// Star shader
+// Clickable link that faces outward
+const ClickableLink = ({
+	position,
+	label,
+	url,
+	color,
+    hoverColor,
+}: {
+	position: [number, number, number];
+	label: string;
+	url: string;
+	color: string;
+    hoverColor: string;
+}) => {
+	const ref = useRef<THREE.Group>(null);
+	const [hovered, setHovered] = useState(false);
+	useCursor(hovered);
+
+	useEffect(() => {
+		if (ref.current) {
+			const normal = new THREE.Vector3(...position).normalize();
+			const lookAtMatrix = new THREE.Matrix4();
+			lookAtMatrix.lookAt(new THREE.Vector3(0, 0, 0), normal, new THREE.Vector3(0, 1, 0));
+			const rotation = new THREE.Euler().setFromRotationMatrix(lookAtMatrix);
+			ref.current.rotation.set(rotation.x, rotation.y, rotation.z);
+		}
+	}, [position]);
+
+	return (
+		<group ref={ref} position={position}>
+			<mesh
+				onClick={(e) => {
+					e.stopPropagation();
+					window.open(url, "_blank");
+				}}
+				onPointerOver={() => setHovered(true)}
+				onPointerOut={() => setHovered(false)}
+			>
+				<circleGeometry args={[3, 32]} />
+				<meshBasicMaterial color={hovered ? hoverColor : color} />
+			</mesh>
+			<Text
+				position={[0, 0, 0.2]}
+				fontSize={1.2}
+				color="#2C2C2C"
+				outlineColor={color}
+				outlineWidth={0.03}
+				anchorX="center"
+				anchorY="middle"
+			>
+				{label}
+			</Text>
+		</group>
+	);
+};
+
 const TwinklingStars = ({ count = 1000, radius = 100 }) => {
 	const pointsRef = useRef<THREE.Points>(null);
 	const materialRef = useRef<THREE.ShaderMaterial>(null);
@@ -81,59 +131,46 @@ const TwinklingStars = ({ count = 1000, radius = 100 }) => {
 	return (
 		<points ref={pointsRef}>
 			<bufferGeometry>
-				<bufferAttribute
-					attach="attributes-position"
-					args={[positions, 3]}
-				/>
-				<bufferAttribute
-					attach="attributes-aOffset"
-					args={[offsets, 1]}
-				/>
+				<bufferAttribute attach="attributes-position" args={[positions, 3]} />
+				<bufferAttribute attach="attributes-aOffset" args={[offsets, 1]} />
 			</bufferGeometry>
 			<shaderMaterial
 				ref={materialRef}
-				args={[{
-					uniforms: {
-						uTime: { value: 0 }
+				args={[
+					{
+						uniforms: {
+							uTime: { value: 0 },
+						},
+						vertexShader: `
+							attribute float aOffset;
+							uniform float uTime;
+							varying float vOpacity;
+							void main() {
+								float speed = 1.5;
+								vOpacity = 0.3 + 0.7 * abs(sin(uTime * speed + aOffset));
+								vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+								gl_PointSize = 2.5;
+								gl_Position = projectionMatrix * mvPosition;
+							}
+						`,
+						fragmentShader: `
+							varying float vOpacity;
+							void main() {
+								float d = distance(gl_PointCoord, vec2(0.5));
+								if (d > 0.5) discard;
+								gl_FragColor = vec4(1.0, 1.0, 1.0, vOpacity);
+							}
+						`,
+						transparent: true,
+						depthWrite: false,
 					},
-					vertexShader: `
-						attribute float aOffset;
-						uniform float uTime;
-						varying float vOpacity;
-
-						void main() {
-							float speed = 1.5;
-							vOpacity = 0.3 + 0.7 * abs(sin(uTime * speed + aOffset));
-							vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-							gl_PointSize = 2.5;
-							gl_Position = projectionMatrix * mvPosition;
-						}
-					`,
-					fragmentShader: `
-						varying float vOpacity;
-
-						void main() {
-							float d = distance(gl_PointCoord, vec2(0.5));
-							if (d > 0.5) discard;
-							gl_FragColor = vec4(1.0, 1.0, 1.0, vOpacity);
-						}
-					`,
-					transparent: true,
-					depthWrite: false
-				}]}
+				]}
 			/>
 		</points>
 	);
 };
 
-// Text on sphere
-const SphereText = ({
-	message,
-	radius = 25,
-}: {
-	message: string;
-	radius?: number;
-}) => {
+const SphereText = ({ message, radius = 25 }: { message: string; radius?: number }) => {
 	const letters = useMemo(() => {
 		const totalArc = Math.PI * 1.85;
 		const angleStep = totalArc / (message.length - 1);
@@ -148,23 +185,13 @@ const SphereText = ({
 
 			const normal = new THREE.Vector3(x, y, z).normalize();
 			const lookAtMatrix = new THREE.Matrix4();
-			lookAtMatrix.lookAt(
-				new THREE.Vector3(0, 0, 0),
-				normal,
-				new THREE.Vector3(0, 1, 0)
-			);
-			const rotation = new THREE.Euler().setFromRotationMatrix(
-				lookAtMatrix
-			);
+			lookAtMatrix.lookAt(new THREE.Vector3(0, 0, 0), normal, new THREE.Vector3(0, 1, 0));
+			const rotation = new THREE.Euler().setFromRotationMatrix(lookAtMatrix);
 
 			return {
 				char,
 				position: [x, y, z] as [number, number, number],
-				rotation: [rotation.x, rotation.y, rotation.z] as [
-					number,
-					number,
-					number
-				],
+				rotation: [rotation.x, rotation.y, rotation.z] as [number, number, number],
 			};
 		});
 	}, [message, radius]);
@@ -182,7 +209,8 @@ const SphereText = ({
 					anchorX="center"
 					anchorY="middle"
 					outlineColor="#FFB6C1"
-					outlineWidth={0.04}>
+					outlineWidth={0.04}
+				>
 					{char}
 				</Text>
 			))}
@@ -190,7 +218,6 @@ const SphereText = ({
 	);
 };
 
-// OrbitControls with start toggle
 const Controls = ({ start }: { start: boolean }) => {
 	const controlsRef = useRef<any>(null);
 	useFrame(() => {
@@ -212,20 +239,17 @@ const Controls = ({ start }: { start: boolean }) => {
 };
 
 const Galleryboard = () => {
-	const imageModules = import.meta.glob(
-		"/src/assets/*.{jpg,jpeg,png,gif,webp}"
-	);
+	const imageModules = import.meta.glob("/src/assets/*.{jpg,jpeg,png,gif,webp}");
 	const [imageList, setImageList] = useState<string[]>([]);
 	const [imageData, setImageData] = useState<any[]>([]);
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [rotationStarted, setRotationStarted] = useState(false);
 	const [minimumLoadTimePassed, setMinimumLoadTimePassed] = useState(false);
+	const sphereRadius = 34;
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setMinimumLoadTimePassed(true);
-		}, 3500);
+		const timer = setTimeout(() => setMinimumLoadTimePassed(true), 3500);
 		return () => clearTimeout(timer);
 	}, []);
 
@@ -233,9 +257,7 @@ const Galleryboard = () => {
 		const loadImages = async () => {
 			const imports = await Promise.all(
 				Object.values(imageModules).map((load) =>
-					(load as () => Promise<{ default: string }>)().then(
-						(mod) => mod.default
-					)
+					(load as () => Promise<{ default: string }>)().then((mod) => mod.default)
 				)
 			);
 			setImageList(imports);
@@ -247,7 +269,6 @@ const Galleryboard = () => {
 	useEffect(() => {
 		if (imageList.length === 0) return;
 
-		const sphereRadius = 34;
 		const latDivisions = 12;
 		const lonDivisions = 26;
 		const generated: any[] = [];
@@ -256,16 +277,13 @@ const Galleryboard = () => {
 
 		for (let i = 0; i < latDivisions; i++) {
 			if (i <= 1 || i >= latDivisions - 2) continue;
-
 			const theta = (i / (latDivisions - 1)) * Math.PI;
 
 			for (let j = 0; j < lonDivisions; j++) {
 				if ((i + j) % 2 !== 0) continue;
-
 				if (imageIndex >= imageList.length) break;
 
 				const phi = (j / lonDivisions) * 2 * Math.PI;
-
 				const x = Math.sin(theta) * Math.cos(phi) * sphereRadius;
 				const y = Math.cos(theta) * sphereRadius;
 				const z = Math.sin(theta) * Math.sin(phi) * sphereRadius;
@@ -275,7 +293,6 @@ const Galleryboard = () => {
 					position: [x, y, z],
 					scale: 9,
 				});
-
 				imageIndex++;
 			}
 		}
@@ -283,15 +300,12 @@ const Galleryboard = () => {
 		setImageData(generated);
 
 		const checkReady = () => {
-			if (minimumLoadTimePassed && !loading) {
-				setRotationStarted(true);
-			}
+			if (minimumLoadTimePassed && !loading) setRotationStarted(true);
 		};
 
-		const readyCheckInterval = setInterval(checkReady, 100);
+		const interval = setInterval(checkReady, 100);
 		checkReady();
-
-		return () => clearInterval(readyCheckInterval);
+		return () => clearInterval(interval);
 	}, [imageList, loading, minimumLoadTimePassed]);
 
 	const message =
@@ -306,26 +320,40 @@ const Galleryboard = () => {
 
 				<Suspense fallback={null}>
 					<SphereText message={message} radius={30} />
+
 					{imageData.map(({ src, position, scale }, i) => (
 						<SphereImage
 							key={`img-${i}`}
 							src={src}
 							position={position}
 							scale={scale}
-							onClick={(imgSrc: string) =>
-								setSelectedImage(imgSrc)
-							}
+							onClick={(imgSrc: string) => setSelectedImage(imgSrc)}
 						/>
 					))}
+
+					{/* Clickable links at the poles */}
+					<ClickableLink
+						position={[0, sphereRadius, 0]}
+						label="CLICK"
+                        color="#FFB6C1"
+                        hoverColor="#FFC0CB"
+						url={gif1}
+					/>
+					<ClickableLink
+						position={[0, -sphereRadius, 0]}
+						label="CLICK"
+                        color="#87CEEB"
+                        hoverColor="#B0E0E6"
+						url={gif2}
+					/>
+
 					<Controls start={rotationStarted} />
 				</Suspense>
 			</Canvas>
 
 			{(!rotationStarted || loading || !minimumLoadTimePassed) && (
 				<div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white bg-black">
-					<div className="text-lg lg:text-4xl font-bold mb-4">
-						Loading Please Wait...
-					</div>
+					<div className="text-lg lg:text-4xl font-bold mb-4">Loading Please Wait...</div>
 					<div className="w-64 h-1 bg-gray-700 rounded-full overflow-hidden">
 						<div
 							className="h-full bg-white transition-all duration-500"
@@ -338,11 +366,12 @@ const Galleryboard = () => {
 			{selectedImage && (
 				<div
 					className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
-					onClick={() => setSelectedImage(null)}>
+					onClick={() => setSelectedImage(null)}
+				>
 					<img
 						src={selectedImage}
 						alt="fullscreen"
-                        draggable="false"
+						draggable="false"
 						className="max-w-full max-h-full object-contain cursor-pointer"
 					/>
 				</div>
