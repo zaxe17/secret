@@ -44,10 +44,9 @@
 :root {
     --primary: #fff;
     --bg-color: rgb(5, 53, 61);
-    --bg-envelope-color: #f8e9c6; /* warm cream background */
---envelope-tab: #f3ddae;      /* deeper cream tab */
---envelope-cover: #efd6a5;    /* richer beige-cream cover */
-
+    --bg-envelope-color: #f8e9c6;
+    --envelope-tab: #f3ddae;
+    --envelope-cover: #efd6a5;
     --shadow-color: rgba(0, 0, 0, 0.2);
     --txt-color: #444;
     --heart-color: rgb(252, 8, 231);
@@ -106,7 +105,7 @@
     right: 20%;
     bottom: 0;
     width: 60%;
-    height: 100%;
+    /* height: 100%; */
     background: var(--primary);
     text-align: center;
     transition: all 1s ease-in-out;
