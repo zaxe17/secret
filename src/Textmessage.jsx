@@ -20,15 +20,7 @@ export default function Textmessage({ onClose }) {
 							<div className="text">
 								<strong>Happy monthsary babi</strong>
 								<p>
-									Maraming salamat sayo
-									dahil dumating ka sa aking buhay at nakagawa
-									ng masayang ala-ala kasama ka, at napapasaya
-									natin ang isa't isa kahit na tayo ay mag
-									kalayo, magkalayo man tayo parati kitang
-									inisip, at sinisigaw ng aking puso. Ang
-									babaeng mamahalin ko sa panghabang buhay
-									hanggang wakas. Happy monthsary baby, mahal
-									na mahal kita.
+									Happy monthsary babi, ako'y nagpapasalamat dahil ika'y dumating sa aking buhay at nakasama ka sa pag gawa ng masasayang ala-ala, ikinagagalak kong nakilala natin ang isa't isa. Tayo man ay magkalayo patuloy kitang papaligayahin, at mamahalin sa walang hangganan. Ngayon hindi kana nag iisa, nandito ako upang gabayan, at samahan sa mahirap na pagsubok, Happy monthsary baby, mahal na mahal kita.
 								</p>
 							</div>
 						</div>
