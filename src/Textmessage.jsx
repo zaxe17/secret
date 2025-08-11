@@ -17,7 +17,7 @@ export default function Textmessage({ onClose }) {
 					className={`envelope-wrapper ${isOpen ? "flap" : ""}`}>
 					<div className="envelope">
 						<div className="letter">
-							<div className="text">
+							<div className="text text-[8px] lg:text-[10px]">
 								<strong>Happy monthsary babi</strong>
 								<p>
 									Happy monthsary babi, ako'y nagpapasalamat dahil ika'y dumating sa aking buhay at nakasama ka sa pag gawa ng masasayang ala-ala, ikinagagalak kong nakilala natin ang isa't isa. Tayo man ay magkalayo patuloy kitang papaligayahin, at mamahalin sa walang hangganan. Ngayon hindi kana nag iisa, nandito ako upang gabayan, at samahan sa mahirap na pagsubok, Happy monthsary baby, mahal na mahal kita.
