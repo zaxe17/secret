@@ -18,9 +18,9 @@ export default function Textmessage({ onClose }) {
 					<div className="envelope">
 						<div className="letter">
 							<div className="text">
-								<strong>Dear Person.</strong>
+								<strong>Happy monthsary babi</strong>
 								<p>
-									Happy monthsary babi, maraming salamat sayo
+									Maraming salamat sayo
 									dahil dumating ka sa aking buhay at nakagawa
 									ng masayang ala-ala kasama ka, at napapasaya
 									natin ang isa't isa kahit na tayo ay mag
