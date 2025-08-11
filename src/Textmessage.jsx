@@ -8,7 +8,7 @@ export default function Textmessage({ onClose }) {
 			onClick={onClose}
 			className="fixed inset-0 flex justify-center items-center z-50 p-10">
 			{/* Background */}
-			<div className="absolute top-0 z-[-2] h-screen w-screen rotate-180 transform bg-white/60 bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]"></div>
+			<div className="absolute top-0 z-[-2] h-screen w-screen rotate-180 transform bg-white/70 bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgb(252,205,238)_100%)]"></div>
 
 			{/* Envelope container */}
 			<div className="container">
