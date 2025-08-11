@@ -162,7 +162,7 @@
 }
 
 .flap > .envelope > .letter {
-    bottom: 200px;
+    bottom: 220px;
     transform: scale(1.5);
     transition-delay: 1s;
 }
