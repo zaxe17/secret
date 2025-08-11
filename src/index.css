@@ -105,7 +105,9 @@
     right: 20%;
     bottom: 0;
     width: 60%;
-    /* height: 100%; */
+    height: auto;
+    display: inline-block;
+    box-sizing: border-box;
     background: var(--primary);
     text-align: center;
     transition: all 1s ease-in-out;
